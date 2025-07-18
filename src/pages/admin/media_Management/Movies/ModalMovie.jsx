@@ -14,6 +14,9 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
+  Tooltip,
+  IconButton,
+  FormHelperText,
 } from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
@@ -26,6 +29,7 @@ import { ContextCategories } from "../../../../context/CategoryProvider";
 import { ContextPlans } from "../../../../context/PlanProvider";
 import { getOjectById } from "../../../../services/convertFunction";
 import { MdCancel } from "react-icons/md";
+import { IoMdCloudUpload } from "react-icons/io";
 const AddMovieModal = ({
   open,
   handleClose,
@@ -169,6 +173,21 @@ const AddMovieModal = ({
                 fullWidth
                 margin="normal"
               />
+              <FormControl fullWidth margin="normal" error={!!error.isSeries}>
+                <InputLabel id="select-series-label">Thể loại phim</InputLabel>
+                <Select
+                  labelId="select-series-label"
+                  id="select-series"
+                  name="isSeries"
+                  label="Thể loại phim"
+                  value={movie.isSeries}
+                  onChange={handleChange}
+                >
+                  <MenuItem value="Phim bộ">Phim bộ</MenuItem>
+                  <MenuItem value="Phim lẻ">Phim lẻ</MenuItem>
+                </Select>
+                <FormHelperText>{error.isSeries}</FormHelperText>
+              </FormControl>
               <Autocomplete
                 fullWidth
                 name="author"
@@ -181,7 +200,7 @@ const AddMovieModal = ({
                 options={authors}
                 getOptionLabel={(option) => option.name} // 👈 hiển thị name
                 isOptionEqualToValue={(option, value) => option.id === value.id} // 👈 quan trọng khi dùng object
-                sx={{ marginBottom: "10px" }}
+                sx={{ my: 1 }}
                 renderInput={(params) => (
                   <TextField
                     {...params}
@@ -204,22 +223,26 @@ const AddMovieModal = ({
                   error={!!error.plan}
                   onChange={handleChange}
                 >
-                  {plans.map((plan) => (
-                    <MenuItem key={plan.level} value={plan.id}>
-                      {plan.title}
-                    </MenuItem>
-                  ))}
+                  {plans
+                    .sort((a, b) => a.level - b.level)
+                    .map((plan) => (
+                      <MenuItem key={plan.level} value={plan.id}>
+                        {plan.title}
+                      </MenuItem>
+                    ))}
                 </Select>
               </FormControl>
-              <TextField
-                label="Rent"
-                type="number"
-                name="rent"
-                value="rent"
-                fullWidth
-                margin="normal"
-                onChange={handleChange}
-              />
+              {getOjectById(plans, movie.plan)?.level > 1 && (
+                <TextField
+                  label="Rent"
+                  type="number"
+                  name="rent"
+                  value={movie.rent}
+                  fullWidth
+                  margin="normal"
+                  onChange={handleChange}
+                />
+              )}
             </div>
             <div className="col-span-1 max-md:col-span-2">
               <Typography
@@ -229,10 +252,11 @@ const AddMovieModal = ({
                 display={"flex"}
                 alignItems={"center"}
               >
-                <div className="flex items-center gap-3 bg-[#30cfd0] p-2 rounded-[9px] cursor-pointer">
-                  Categories
-                  <FaDropbox />
-                </div>
+                <Tooltip title="Categories">
+                  <IconButton>
+                    <FaDropbox />
+                  </IconButton>
+                </Tooltip>
               </Typography>
               <Grid container spacing={1} marginBottom={2}>
                 {movie.listCate.map((cate) => (
@@ -253,13 +277,11 @@ const AddMovieModal = ({
                     />
                   </Grid>
                 ))}
-                {
-                  error.listCate && (
-                    <Grid item xs={12}>
-                        <span className="text-[#CD5C5C]">{error.listCate}</span>
-                    </Grid>
-                  )
-                }
+                {error.listCate && (
+                  <Grid item xs={12}>
+                    <span className="text-[#CD5C5C]">{error.listCate}</span>
+                  </Grid>
+                )}
               </Grid>
               {/* Actors */}
               <Typography
@@ -269,15 +291,20 @@ const AddMovieModal = ({
                 display={"flex"}
                 alignItems={"center"}
               >
-                <div className="flex items-center gap-3 bg-[#30cfd0] p-2 rounded-[9px] cursor-pointer">
-                  Actor
-                  <FaUser />
-                </div>
+                <Tooltip title="Actors">
+                  <IconButton>
+                    <FaUser />
+                  </IconButton>
+                </Tooltip>
               </Typography>
               <Grid container spacing={1} marginBottom={2}>
                 {movie.listActor.map((actor) => (
                   <Grid item key={actor} position={"relative"}>
-                    <Avatar src={getOjectById(actors, actor)?.imgUrl} />
+                    <Tooltip title={getOjectById(actors, actor)?.name}>
+                      <IconButton>
+                        <Avatar src={getOjectById(actors, actor)?.imgUrl} />
+                      </IconButton>
+                    </Tooltip>
                     <MdCancel
                       onClick={() => selectChoose(actor, "actors")}
                       className="absolute -top-[7px] -left-[7px]  hover:text-red-600"
@@ -294,15 +321,20 @@ const AddMovieModal = ({
                 display={"flex"}
                 alignItems={"center"}
               >
-                <div className="flex items-center gap-3 bg-[#30cfd0] p-2 rounded-[9px] cursor-pointer">
-                  Character
-                  <FaUsers />
-                </div>
+                <Tooltip title="Characters">
+                  <IconButton>
+                    <FaUsers />
+                  </IconButton>
+                </Tooltip>
               </Typography>
               <Grid container spacing={1} marginBottom={2}>
                 {movie.listChar.map((item) => (
                   <Grid item key={item} position={"relative"}>
-                    <Avatar src={getOjectById(characters, item)?.imgUrl} />
+                    <Tooltip title={getOjectById(characters, item)?.name}>
+                      <IconButton>
+                        <Avatar src={getOjectById(characters, item)?.imgUrl} />
+                      </IconButton>
+                    </Tooltip>
                     <MdCancel
                       onClick={() => selectChoose(item, "characters")}
                       className="absolute -top-[7px] -left-[7px]  hover:text-red-600"
@@ -313,10 +345,11 @@ const AddMovieModal = ({
 
               {/* Upload Image */}
               <Button
-                variant="outlined"
-                startIcon={<PhotoCamera />}
+                variant="contained"
                 component="label"
                 onChange={handleFileChange}
+                tabIndex={-1}
+                startIcon={<IoMdCloudUpload />}
               >
                 Upload Image
                 <input type="file" hidden />
@@ -327,7 +360,6 @@ const AddMovieModal = ({
                     src={movie.imgUrl}
                     alt=""
                     style={{
-                      width: 100,
                       height: 100,
                       objectFit: "cover",
                       marginTop: 8,

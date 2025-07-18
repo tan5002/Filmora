@@ -25,7 +25,7 @@ function TableEpisodes({ handleOpen, setEpisodes, episodes, search }) {
   const [open, setOpen] = useState(false);
   const movies = useContext(ContextMovie);
   const filterEpisode = episodesList.filter((e) =>
-    getOjectById(movies, e.idMovie)?.name.includes(search.toLowerCase())
+    getOjectById(movies, e.idMovie).name?.toLowerCase().includes(search?.toLowerCase())
   );
 
   const handleEdit = (row) => {
@@ -55,7 +55,7 @@ function TableEpisodes({ handleOpen, setEpisodes, episodes, search }) {
   );
   return (
     <div className="p-3">
-      <TableContainer component={Paper} sx={{ backgroundColor: "#1c1e26" }}>
+      <TableContainer component={Paper} sx={{ backgroundColor: "#0B1739" }}>
         <Table sx={{ minWidth: 700 }} aria-label="customized table">
           <TableHead>
             <TableRow>
@@ -63,7 +63,7 @@ function TableEpisodes({ handleOpen, setEpisodes, episodes, search }) {
                 #
               </TableCell>
               <TableCell
-                sx={{ color: "gray", fontWeight: "bold" }}
+                sx={{ color: "gray", fontWeight: "bold" ,whiteSpace : "nowrap" }}
                 align="left"
               >
                 Episodes Number
@@ -101,7 +101,7 @@ function TableEpisodes({ handleOpen, setEpisodes, episodes, search }) {
                 <TableCell sx={{ color: "white" }}>
                   {getOjectById(movies, row.idMovie)?.name}
                 </TableCell>
-                <TableCell>
+                <TableCell sx={{ whiteSpace : "nowrap"}}>
                   <Button
                     variant="contained"
                     color="primary"

@@ -50,7 +50,7 @@ function TablePackage({ handleOpen, setIsPackage, isPackage }) {
   return (
     <div className="p-3">
       <TableContainer component={Paper} 
-        sx={{ backgroundColor: "#1c1e26" }}
+        sx={{ backgroundColor: "#0B1739" }}
         >
         <Table sx={{ minWidth: 700 }} aria-label="customized table">
           <TableHead>

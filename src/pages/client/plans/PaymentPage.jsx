@@ -1,7 +1,9 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { ContextPackage } from "../../../context/PackageProvider";
 import { ContextPlans } from "../../../context/PlanProvider";
+import { ContextSubscription } from "../../../context/SubscriptionProvider";
+
 import zalo from "../../../assets/zalo.png";
 import visa from "../../../assets/visa.png";
 import vnp from "../../../assets/vnp.png";
@@ -14,6 +16,7 @@ import { initialOptions } from "../../../utils/contants";
 import { PayPalButtons, PayPalScriptProvider } from "@paypal/react-paypal-js";
 import { addDocument } from "../../../services/firebaseResponse";
 import { useAuth } from "../../../context/AuthsProvider";
+import { useNotification } from "../../../context/NotificationProvider";
 
 function PaymentPage() {
   const paymentMethods = [
@@ -30,11 +33,12 @@ function PaymentPage() {
   const [packList, setPackList] = useState([]);
   const { id } = useParams();
   const packageList = useContext(ContextPackage);
-  
+  const showNotification = useNotification();
   const plans = useContext(ContextPlans);
   const [plan, setPlan] = useState({});
   const priceRef = useRef(0);
   const today = new Date();
+  const navigate = useNavigate()
   
   useEffect(() => {
     const filterPackage = packageList
@@ -69,19 +73,26 @@ function PaymentPage() {
   };
   const {isLogin} = useAuth();  
 const createSubscription = async (id) => {
-    const starDate = today.toLocaleString("vi-VN");
-    const expiryDate = getExpiredDate();
+  const starDate = new Date();
+  const expiryDate = new Date();
+  expiryDate.setMonth(starDate.getMonth() + parseInt(selectedDuration?.time || 1));
     const paymentMethod = selectedPlan;
     const subscriptionData = {
       planId: plan?.id,
       starDate: starDate,
       expiryDate: expiryDate,
+      price: priceRef.current,
       paymentMethod: paymentMethod?.name,
       transactionId: id,
       accountId: isLogin.id
     }
     await addDocument("Subscriptions", subscriptionData);
+    showNotification(`Bạn đã đăng kí thành công!`, "success");
+    navigate(`/`)
 }
+useEffect(() => {
+  window.scrollTo(0, 0);
+}, []);
 
   return (
     <div className="min-h-screen bg-white p-6 flex flex-col items-center pt-[100px]">
@@ -195,10 +206,10 @@ const createSubscription = async (id) => {
               {paymentMethods.map((method, idx) => (
                 <button
                   key={idx}
-                  onClick={() => setSelectedPlan(idx)}
+                  onClick={() => setSelectedPlan(method.name)}
                   className={`border px-4 py-2 rounded-lg flex flex-col items-center text-sm 
                   ${
-                    selectedPlan === idx
+                    selectedPlan === method.name
                       ? "border-4 border-blue-600 bg-white "
                       : "border border-black/5"
                   }`}
@@ -207,7 +218,7 @@ const createSubscription = async (id) => {
                     src={method.image}
                     alt=""
                     className={`text-2xl mb-1 ${
-                      selectedPlan === idx ? "" : "opacity-20" 
+                      selectedPlan === method.name ? "" : "opacity-20" 
                     }`}
                   />
                   {method.name}

@@ -7,25 +7,29 @@ import {
   addDocument,
   updateDocument,
 } from "../../../../services/firebaseResponse";
-
+import {useNotification} from "../../../../context/NotificationProvider"
 const inner = {
   name: "",
   description: "",
   duration: "",
   plan: "",
-  rent: "",
+  rent: 0,
   author: "",
   listCate: [],
   listActor: [],
   listChar: [],
   imgUrl: LOGO,
   oldImgUrl: "",
+  date: new Date(),
+  isSeries: "",
 };
 function Movie() {
   const [open, setOpen] = useState(false);
   const [movie, setMovie] = useState(inner);
   const [error, setError] = useState(inner);
   const [search, setSearch] = useState("")
+  const showNotification = useNotification();
+
   const handleOpen = () => {
     setOpen(true);
     setMovie(inner);
@@ -39,8 +43,10 @@ function Movie() {
     }
     if (movie.id) {
       await updateDocument("Movies", movie);
+      showNotification('Chỉnh sửa thành công!', "success");
     } else {
       await addDocument("Movies", movie);
+      showNotification('Thêm thành công!', "success");
     }
     handleClose();
   };
@@ -52,6 +58,7 @@ function Movie() {
     newError.plan = movie.plan ? "" : "Enter plan";
     newError.listCate = movie.listCate.length > 0 ? "" : "Choose a Category";
     newError.author = movie.author ? "" : "Choose author";
+    newError.isSeries = movie.isSeries ? "" : "Choose series";
     setError(newError);
     return Object.values(newError).every((e) => e === "");
   };
@@ -62,7 +69,7 @@ function Movie() {
   return (
     <div>
       <AdminHeader
-        title={" list Movies"}
+        title={" List Movies"}
         name={" Add Movies"}
         handleOpen={handleOpen}
         handleSearch={handleSearch}

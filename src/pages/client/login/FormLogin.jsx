@@ -5,7 +5,7 @@ import { useAuth } from "../../../context/AuthsProvider";
 import { ContextAccount } from "../../../context/AccountProvider";
 
 const inner = {email: "", password: ""}
-function FormLogin({ onClose }) {
+function FormLogin({ onClose, setForget }) {
   const [login, setLogin] = useState(inner)
   const [error, setError] = useState(inner)
   const showNotification = useNotification();
@@ -99,9 +99,9 @@ function FormLogin({ onClose }) {
           },
         }}
       />
-      <div className="text-sm text-pink-600 hover:underline cursor-pointer">
+      <button className="text-sm text-pink-600 hover:underline cursor-pointer" onClick={() => setForget(true)}>
         Forgot password?
-      </div>
+      </button>
       <button onClick={handleSave} className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-2 rounded-md font-semibold">
         Login
       </button>

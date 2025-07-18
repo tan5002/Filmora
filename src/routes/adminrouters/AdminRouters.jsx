@@ -14,6 +14,7 @@ import Watchlist from '../../pages/admin/engagement_pages/Watchlist/Watchlist';
 import Actor from '../../pages/admin/cast&crew/Actor/Actor'
 import Author from '../../pages/admin/cast&crew/Author/Author'
 import Character from '../../pages/admin/cast&crew/Character/Character'
+import Season from '../../pages/admin/media_Management/Season/Season';
 
 
 function AdminRouters() {
@@ -38,6 +39,10 @@ function AdminRouters() {
         {
             path: '/admin/trailer',
             component: <Trailer/>
+        },
+        {
+            path: '/admin/season',
+            component: <Season/>
         },
         // Vip
         {

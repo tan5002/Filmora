@@ -1,6 +1,6 @@
 import React from 'react';
 import { FaReddit, FaDiscord, FaInstagram, FaFacebook } from 'react-icons/fa';
-import logo from "../../assets/logoFooterFilmora.png";
+import logo from "../../assets/logo.png";
 
 const Footer = () => {
   return (
@@ -13,7 +13,6 @@ const Footer = () => {
               alt="Logo"
               className="h-20 w-auto"
             />
-            <span className="text-3xl font-semibold text-red-600">Filmora</span>
           </div>
           <p className="text-gray-400 leading-relaxed mb-4">
             Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eum modi, possimus dolore saepe nobis itaque cupiditate veniam nostrum, provident quam, nequeab dicta velit debitis cum unde recusandae. Fuga, consectetur.

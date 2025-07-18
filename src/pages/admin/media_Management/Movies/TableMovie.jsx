@@ -65,7 +65,7 @@ function TableMovie({ handleOpen, setMovie, movie, search }) {
   );
   return (
     <div className="p-3">
-      <TableContainer component={Paper} sx={{ backgroundColor: "#1c1e26" }}>
+      <TableContainer component={Paper} sx={{ backgroundColor: "#0B1739" }}>
         <Table sx={{ minWidth: 700 }} aria-label="customized table">
           <TableHead>
             <TableRow>
@@ -104,23 +104,28 @@ function TableMovie({ handleOpen, setMovie, movie, search }) {
               </TableCell>
               <TableCell
                 align="left"
-                sx={{ color: "gray", fontWeight: "bold" }}
+                sx={{ color: "gray", fontWeight: "bold", whiteSpace: "nowrap" }}
               >
                 List Category
               </TableCell>
               <TableCell
                 align="left"
-                sx={{ color: "gray", fontWeight: "bold" }}
+                sx={{ color: "gray", fontWeight: "bold", whiteSpace: "nowrap" }}
               >
                 List Actor
               </TableCell>
               <TableCell
                 align="left"
-                sx={{ color: "gray", fontWeight: "bold" }}
+                sx={{ color: "gray", fontWeight: "bold", whiteSpace: "nowrap" }}
               >
                 List Character
               </TableCell>
-
+              <TableCell
+                align="left"
+                sx={{ color: "gray", fontWeight: "bold",whiteSpace: "nowrap"}}
+              >
+                Thể loại phim
+              </TableCell>
               <TableCell
                 align="left"
                 sx={{ color: "gray", fontWeight: "bold" }}
@@ -151,6 +156,9 @@ function TableMovie({ handleOpen, setMovie, movie, search }) {
                 </TableCell>
                 <TableCell align="left" sx={{ color: "white" }}>
                   {getOjectById(authors, row.author)?.name}
+                </TableCell>
+                <TableCell align="left" sx={{ color: "white" }}>
+                  {row.isSeries}
                 </TableCell>
                 <TableCell align="left" sx={{ color: "white" }}>
                   <Tooltip
@@ -184,7 +192,7 @@ function TableMovie({ handleOpen, setMovie, movie, search }) {
                   </Tooltip>
                 </TableCell>
 
-                <TableCell align="left">
+                <TableCell align="left" sx={{ whiteSpace : "nowrap"}}>
                   <Button
                     variant="contained"
                     color="primary"

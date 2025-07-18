@@ -13,40 +13,41 @@ import { addDocument } from "../../../services/firebaseResponse";
 import { useAuth } from "../../../context/AuthsProvider";
 import { Navigate } from "react-router-dom";
 import { useNotification } from "../../../context/NotificationProvider";
-
+import FormForget from "./FormForget";
 
 function Login({ open, onClose }) {
   const [tab, setTab] = useState(false);
   const accounts = useContext(ContextAccount);
   const { handleLogin } = useAuth();
   const showNotification = useNotification();
+  const [forget, setForget] = useState(false);
   // Google sign-in
-const signInWithGoogle = async () => {
-  try {
+  const signInWithGoogle = async () => {
+    try {
       const result = await signInWithPopup(auth, googleProvider);
       const user = result.user;
-      const existingCustomer = accounts.find(a => a.email === user.email);
+      const existingCustomer = accounts.find((a) => a.email === user.email);
       let loggedInCustomer;
 
       if (!existingCustomer) {
-          const newCustomer = {
-              userName: user.displayName,
-              email: user.email,
-              imgUrl: user.photoURL,
-              role: ROLES.USER,
-          };
-           const accountNew = await addDocument('Accounts', newCustomer);
-          loggedInCustomer = accountNew;
+        const newCustomer = {
+          userName: user.displayName,
+          email: user.email,
+          imgUrl: user.photoURL,
+          role: ROLES.USER,
+        };
+        const accountNew = await addDocument("Accounts", newCustomer);
+        loggedInCustomer = accountNew;
       } else {
-          loggedInCustomer = existingCustomer;
+        loggedInCustomer = existingCustomer;
       }
       handleLogin(loggedInCustomer);
-      showNotification('Login successfully!', "success");
+      showNotification("Login successfully!", "success");
       onClose();
-  } catch (error) {
-      showNotification('Login failed!', "error", error);
-  }
-};
+    } catch (error) {
+      showNotification("Login failed!", "error", error);
+    }
+  };
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
@@ -77,21 +78,34 @@ const signInWithGoogle = async () => {
           </button>
         </div>
         <div className="space-y-4 text-white flex flex-col gap-2">
-          { tab ? <FormRegister setTab={setTab}  /> : <FormLogin onClose={onClose} /> }  
+          {forget ? (
+            <FormForget setForget={setForget} />
+          ) : tab ? (
+            <FormRegister setTab={setTab} />
+          ) : (
+            <FormLogin onClose={onClose} setForget={setForget} />
+          )}
         </div>
-        <div className="my-6 text-center text-white">Or login with</div>
-        <div className="flex justify-evenly items-center">
-          <button onClick={signInWithGoogle} className="flex items-center justify-center gap-2 py-2">
-            <FcGoogle className=" text-5xl transform transition duration-300 hover:scale-200 hover:brightness-200" />
-          </button>
+        {!forget && (
+          <>
+            <div className="my-6 text-center text-white">Or login with</div>
+            <div className="flex justify-evenly items-center">
+              <button
+                onClick={signInWithGoogle}
+                className="flex items-center justify-center gap-2 py-2"
+              >
+                <FcGoogle className=" text-5xl transform transition duration-300 hover:scale-200 hover:brightness-200" />
+              </button>
 
-          <button className=" flex items-center justify-center gap-2 py-2 rounded-md text-[#1877F2]">
-            <FaFacebookF className=" text-5xl transform transition duration-300 hover:scale-200 hover:brightness-200" />
-          </button>
-          <button className=" flex items-center justify-center gap-2 py-2 rounded-md text-[#E1306C]">
-            <FaInstagram className=" text-5xl transform transition duration-300 hover:scale-200 hover:brightness-200" />
-          </button>
-        </div>
+              <button className=" flex items-center justify-center gap-2 py-2 rounded-md text-[#1877F2]">
+                <FaFacebookF className=" text-5xl transform transition duration-300 hover:scale-200 hover:brightness-200" />
+              </button>
+              <button className=" flex items-center justify-center gap-2 py-2 rounded-md text-[#E1306C]">
+                <FaInstagram className=" text-5xl transform transition duration-300 hover:scale-200 hover:brightness-200" />
+              </button>
+            </div>
+          </>
+        )}
       </DialogContent>
     </Dialog>
   );

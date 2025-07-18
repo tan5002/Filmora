@@ -11,11 +11,14 @@ import { MovieProvider } from "./context/MovieProvider.jsx";
 import { PlanProvider } from "./context/PlanProvider.jsx";
 import { EpisodesProvider } from "./context/EpisodesProvider.jsx";
 import { PackageProvider } from "./context/PackageProvider.jsx";
-import { FeatureProvider } from "./context/FeatureProvider.jsx"
-import { AccountProvider } from "./context/AccountProvider.jsx"
+import { FeatureProvider } from "./context/FeatureProvider.jsx";
+import { AccountProvider } from "./context/AccountProvider.jsx";
 import { NotificationProvider } from "./context/NotificationProvider.jsx";
 import { AuthsProvider } from "./context/AuthsProvider.jsx";
-
+import { SubscriptionProvider } from "./context/SubscriptionProvider.jsx";
+import { RentMovieProvider } from "./context/RentMovieProvider.jsx";
+import { CommentProvider } from "./context/CommentProvider.jsx";
+import { SeasonProvider } from "./context/SeasonProvider.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -28,15 +31,23 @@ createRoot(document.getElementById("root")).render(
                 <PlanProvider>
                   <EpisodesProvider>
                     <PackageProvider>
-                    <FeatureProvider>
-                    <AccountProvider>
-                    <NotificationProvider>
-                    <AuthsProvider>
-                      <App />
-                    </AuthsProvider>
-                    </NotificationProvider>
-                    </AccountProvider>
-                    </FeatureProvider>
+                      <FeatureProvider>
+                        <AccountProvider>
+                          <NotificationProvider>
+                            <AuthsProvider>
+                              <SubscriptionProvider>
+                                <RentMovieProvider>
+                                <CommentProvider>
+                                <SeasonProvider>
+                                  <App />
+                                </SeasonProvider>
+                                </CommentProvider>
+                                </RentMovieProvider>
+                              </SubscriptionProvider>
+                            </AuthsProvider>
+                          </NotificationProvider>
+                        </AccountProvider>
+                      </FeatureProvider>
                     </PackageProvider>
                   </EpisodesProvider>
                 </PlanProvider>

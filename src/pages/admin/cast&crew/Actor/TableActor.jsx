@@ -54,7 +54,7 @@ function TableActor({ handleOpen, setActor, actor, search }) {
     <div className="p-3">
       <TableContainer
         component={Paper}
-        sx={{ backgroundColor: "#1c1e26" }}
+        sx={{ backgroundColor: "#0B1739" }}
         className="py-3"
       >
         <Table sx={{ minWidth: 700 }} aria-label="customized table">
@@ -98,7 +98,7 @@ function TableActor({ handleOpen, setActor, actor, search }) {
                   {page * rowsPerPage + index + 1}
                 </TableCell>
                 <TableCell align="left">
-                  <img src={row.imgUrl} alt="Product" className="w-10" />
+                  <img src={row.imgUrl} alt="Product" className="w-[50px] h-[50px] object-cover rounded-full" />
                 </TableCell>
                 <TableCell align="left" sx={{ color: "white" }}>
                   {row.name}

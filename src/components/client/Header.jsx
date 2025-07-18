@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { IoSearch } from "react-icons/io5";
-import { FaBell, FaBars, FaTimes } from "react-icons/fa";
+import { FaBell, FaBars, FaTimes, FaList } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import logo from "../../assets/logo.png";
 import Box from "@mui/material/Box";
@@ -23,6 +23,7 @@ import { ContextMovie } from "../../context/MovieProvider";
 import { ContextAuthor } from "../../context/AuthorProvider";
 import { getOjectById } from "../../services/convertFunction";
 import { useNavigate } from "react-router-dom";
+import { RxAvatar } from "react-icons/rx";
 
 function Header({ openLogin }) {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -44,15 +45,15 @@ function Header({ openLogin }) {
         setSearch(false);
       }
     };
-  
+
     if (search) {
       document.addEventListener("mousedown", handleClickOutside);
     }
-  
+
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [search]);  
+  }, [search]);
   const movies = useContext(ContextMovie);
   const authors = useContext(ContextAuthor);
   const { isLogin } = useAuth();
@@ -69,15 +70,14 @@ function Header({ openLogin }) {
     setAnchorEl(null);
   };
 
-  const handleNavigate = (id) => {
+  const handleNavigate = (e, id) => {
     console.log("VSVS");
-    
-      navigate(`/detail/${id}`);
-  }; 
+    navigate(`/detail/${id}`);
+  };
 
   return (
     <>
-      <header className="text-white max-sm:flex-col bg-black/50 shadow-md px-4 sm:px-6 py-3 flex min-sm:gap-10 items-center justify-between flex-wrap fixed z-10 w-full">
+      <header className="text-white max-sm:flex-col bg-black/50 shadow-md px-4 sm:px-6 py-3 flex min-sm:gap-10 items-center justify-between flex-wrap fixed z-100 w-full">
         {/* Logo & Brand */}
         <div className="flex items-center max-sm:justify-between max-sm:w-full gap-3">
           <img
@@ -106,7 +106,7 @@ function Header({ openLogin }) {
               Trang chủ
             </Link>
             <Link
-              to="/#"
+              to="/phimbo"
               className="block py-2 sm:py-0  font-medium hover:text-blue-600"
             >
               Phim bộ
@@ -124,17 +124,14 @@ function Header({ openLogin }) {
               Anime
             </Link>
             <Link
-              to="/#"
+              to="/favorite"
               className="block py-2 sm:py-0 font-medium hover:text-blue-600"
             >
               Phim yêu thích
             </Link>
           </ul>
 
-          <div
-           
-            className="w-full sm:w-auto flex items-center justify-center sm:justify-end gap-3 mt-3 sm:mt-0"
-          >
+          <div className="w-full sm:w-auto flex items-center justify-center sm:justify-end gap-3 mt-3 sm:mt-0">
             {search ? (
               <Stack
                 spacing={2}
@@ -158,8 +155,16 @@ function Header({ openLogin }) {
                   freeSolo
                   options={movies}
                   getOptionLabel={(option) => option.name}
+                  onInputChange={(event, newInputValue) => {
+                    const matchedMovie = movies.find(
+                      (movie) => movie.name === newInputValue
+                    );
+                    if (matchedMovie) {
+                      handleNavigate(event, matchedMovie.id); // Truyền ID vào hàm xử lý
+                    }
+                  }}
                   renderOption={(props, option) => (
-                    <li onChange={() => handleNavigate(option.id)} {...props}>
+                    <li {...props}>
                       <img
                         src={option.imgUrl}
                         alt={option.name}
@@ -172,12 +177,15 @@ function Header({ openLogin }) {
                       />
                       <div>
                         <p>{option.name}</p>
-                        <p className="text-sm text-gray-400">tác giả: {getOjectById(authors, option.author)?.name}</p>
+                        <p className="text-sm text-gray-400">
+                          tác giả: {getOjectById(authors, option.author)?.name}
+                        </p>
                       </div>
                     </li>
                   )}
                   renderInput={(params) => (
                     <TextField
+                      onChange={handleNavigate}
                       {...params}
                       label="Search movie"
                       sx={{
@@ -227,11 +235,15 @@ function Header({ openLogin }) {
                         aria-haspopup="true"
                         aria-expanded={open ? "true" : undefined}
                       >
-                        <img
-                          className="w-10 h-10 rounded-full object-cover"
-                          alt=""
-                          src={isLogin.imgUrl}
-                        />
+                        {isLogin.imgUrl ? (
+                          <img
+                            className="w-10 h-10 rounded-full object-cover"
+                            alt="Avatar"
+                            src={isLogin.imgUrl}
+                          />
+                        ) : (
+                          <RxAvatar className="text-4xl text-white hover:text-blue-500" />
+                        )}
                       </IconButton>
                     </Tooltip>
                   </>
@@ -281,25 +293,42 @@ function Header({ openLogin }) {
                 transformOrigin={{ horizontal: "right", vertical: "top" }}
                 anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
               >
-                <MenuItem onClick={handleClose}>
-                  <Avatar /> Profile
-                </MenuItem>
-                <MenuItem onClick={handleClose}>
-                  <Avatar /> My account
+                <MenuItem onClick={handleClose} className="flex gap-2">
+                  {isLogin?.imgUrl ? (
+                    <img
+                      src={isLogin?.imgUrl}
+                      alt={isLogin?.useName}
+                      className="w-10 h-10 rounded-full object-cover"
+                    />
+                  ) : (
+                    <Avatar />
+                  )}
+                  {isLogin?.email}
                 </MenuItem>
                 <Divider />
+                <MenuItem onClick={handleClose}>
+                  <ListItemIcon>
+                    <FaList fontSize="small" />
+                  </ListItemIcon>
+                  Movie Libraries Management
+                </MenuItem>
                 <MenuItem onClick={handleClose}>
                   <ListItemIcon>
                     <PersonAdd fontSize="small" />
                   </ListItemIcon>
                   Add another account
                 </MenuItem>
-                <MenuItem onClick={handleClose}>
-                  <ListItemIcon>
-                    <Settings fontSize="small" />
-                  </ListItemIcon>
-                  Settings
-                </MenuItem>
+                <Link
+                  to="/setting"
+                  style={{ textDecoration: "none", color: "inherit" }}
+                >
+                  <MenuItem onClick={handleClose}>
+                    <ListItemIcon>
+                      <Settings fontSize="small" />
+                    </ListItemIcon>
+                    My Account
+                  </MenuItem>
+                </Link>
                 <MenuItem onClick={logout}>
                   <ListItemIcon>
                     <Logout fontSize="small" />

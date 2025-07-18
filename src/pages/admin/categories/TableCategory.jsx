@@ -60,7 +60,7 @@ function TableCategory({ handleOpen, setCategory, category, search }) {
     <div className="p-3">
       <TableContainer
         component={Paper}
-        sx={{ backgroundColor: "#1c1e26" }}
+        sx={{ backgroundColor: "#0B1739" }}
         className="py-3"
       >
         <Table>
@@ -100,7 +100,7 @@ function TableCategory({ handleOpen, setCategory, category, search }) {
                 <TableCell sx={{ color: "white", fontWeight: 500 }}>
                   {row.description}
                 </TableCell>
-                <TableCell sx={{ color: "white", fontWeight: 500 }}>
+                <TableCell sx={{ color: "white", fontWeight: 500, whiteSpace : "nowrap" }}>
                   <Button
                     variant="contained"
                     color="primary"

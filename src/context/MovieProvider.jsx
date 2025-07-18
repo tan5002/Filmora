@@ -15,7 +15,8 @@ export const MovieProvider = ({ children }) => {
     // Hủy lắng nghe khi component bị unmount
     return () => unsubscribe();
   }, []);
-
+  console.log(movie);
+  
   return (
     <ContextMovie.Provider value={movie}>
       {children}

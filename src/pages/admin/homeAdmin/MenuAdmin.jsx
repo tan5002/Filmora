@@ -15,7 +15,7 @@ function MenuAdmin() {
   const [subOpen, setSubOpen] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   // const [openMobile, setOpenMobile] = useState(true)
-  const [color, setColor] = useState(false);
+  const [color, setColor] = useState(true);
   const clickToggle = () => {
     setColor(!color);
   };
@@ -27,7 +27,7 @@ function MenuAdmin() {
     }
   };
   return (
-    <div className="p-4 bg-[#1C1D27] md:overflow-y-auto md:h-[100vh] border-r-1 border-r-[#87888c] ">
+    <div className="p-4 bg-[#081028] md:overflow-y-auto md:h-[100vh] border-r-1 border-r-[#87888c] ">
       <h1 className="flex items-center gap-4 ">
         <FaBars
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
@@ -36,10 +36,10 @@ function MenuAdmin() {
         <span className="text-2xl font-bold text-white">FilMora</span>
       </h1>
       <div className={isSidebarOpen ? "" : "max-md:hidden"}>
-        <h1 className="flex items-center gap-5 px-6 py-2 bg-[#73CABE]  rounded-md mt-2 ">
+        <h1 className="flex items-center gap-5 px-6 py-2 text-[#cb3cff] rounded-md mt-2 hover:color-title">
           <RiHome2Fill />
           {isSidebarOpen && (
-            <span className="text-black font-bold">Dashboard</span>
+            <span className=" font-bold">Dashboard</span>
           )}
         </h1>
         {isSidebarOpen && <span className="text-[#87888c]">UI ELEMENTS </span>}
@@ -49,21 +49,25 @@ function MenuAdmin() {
             <h1
               onClick={clickToggle}
               className={`flex items-center gap-5 px-6 py-2 text-[#87888c]  rounded-md mt-2  cursor-pointer shadow-sm  transition  ${
-                color ? "" : "bg-[#73CABE] text-black"
+                color ? "text-[#cb3cff] " : "color-title text-white"
               } `}
             >
-              <FaDropbox />
-              {isSidebarOpen && <p> Categories</p>}
+              <FaDropbox  />
+              {isSidebarOpen && (
+                <p > Categories</p>
+              )}
             </h1>
           </Link>
         </div>
-        {isSidebarOpen && <span className="text-[#87888c]">FORMS AND DATA </span>}
+        {isSidebarOpen && (
+          <span className="text-[#87888c]">FORMS AND DATA </span>
+        )}
         <div>
           {LISTMENU.map((item) => (
             <>
               <div
-                className={`flex items-center gap-5 px-6 py-2 rounded-md mt-2 text-[#87888c] ${
-                  subOpen === item.id ? "bg-[#73CABE] text-black" : ""
+                className={`flex items-center gap-5 px-6 py-2 rounded-md mt-2 text-[#87888c]  cursor-pointer${
+                  subOpen === item.id ? " text-white color-title" : " text-[#cb3cff]"
                 }`}
                 onClick={() => handleToggleSidebar(item.id)}
               >
@@ -84,8 +88,11 @@ function MenuAdmin() {
                   {item.subMenu.map((subItem) => (
                     <li>
                       <Link to={subItem.path}>
-                        <span className="block px-3 py-2 rounded hover:bg-green-100 hover:text-black hover:font-bold text-gray-700 cursor-pointer transition">
-                          {subItem.name}
+                        <span className="relative block px-3 py-2 rounded text-gray-700 cursor-pointer overflow-hidden group">
+                          <span className="absolute inset-0 bg-green-100 scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-700"></span>
+                          <span className="relative z-10 group-hover:text-black group-hover:font-bold transition-colors duration-300">
+                            {subItem.name}
+                          </span>
                         </span>
                       </Link>
                     </li>
@@ -98,31 +105,20 @@ function MenuAdmin() {
         {isSidebarOpen && <span className="text-[#87888c]">PAGES </span>}
 
         <div>
-          <h1
-            className="flex items-center gap-5 px-6 py-2 text-[#87888c] rounded-md mt-2 "
-          >
+          <h1 className="flex items-center gap-5 px-6 py-2 text-[#cb3cff] rounded-md mt-2 ">
             <FaUserAlt />
             {isSidebarOpen && <Link to="admin/user"> User</Link>}
           </h1>
         </div>
-        {isSidebarOpen && <span className="text-[#87888c]">USER MANAGEMENT </span>}
+        {isSidebarOpen && (
+          <span className="text-[#87888c]">USER MANAGEMENT </span>
+        )}
         <div>
-          <h1
-            className="flex items-center gap-5 px-6 py-2 text-[#87888c] rounded-md mt-2 "
-          >
+          <h1 className="flex items-center gap-5 px-6 py-2 text-[#cb3cff] rounded-md mt-2 ">
             <FaUserAlt />
             {isSidebarOpen && (
               <Link to="admin/usermanagement"> User Management</Link>
             )}
-          </h1>
-        </div>
-        {isSidebarOpen && <span className="text-[#87888c]">HELP</span>}
-        <div>
-          <h1
-            className="flex items-center gap-5 px-6 py-2 text-[#87888c] rounded-md mt-2 "
-          >
-            <IoDocument />
-            {isSidebarOpen && <Link to="admin/profile"> Profile</Link>}
           </h1>
         </div>
       </div>

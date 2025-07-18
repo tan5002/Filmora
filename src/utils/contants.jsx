@@ -22,6 +22,11 @@ export const LISTMENU = [
                 id: 3,
                 name: "Trailer",
                 path: "/admin/trailer"
+            },
+            {
+                id: 4,
+                name: "Season",
+                path: "/admin/season"
             }
         ]
     },

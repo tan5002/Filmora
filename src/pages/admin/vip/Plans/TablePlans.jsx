@@ -50,7 +50,7 @@ function TablePlans({ handleOpen, setPlan, plan }) {
   return (
     <div className="p-3">
       <TableContainer component={Paper} 
-        sx={{ backgroundColor: "#1c1e26" }}
+        sx={{ backgroundColor: "#0B1739" }}
         >
         <Table sx={{ minWidth: 700 }} aria-label="customized table">
           <TableHead>
@@ -60,7 +60,7 @@ function TablePlans({ handleOpen, setPlan, plan }) {
               <TableCell align="left" sx={{ color: "gray", fontWeight: "bold" }}>Level</TableCell>
               <TableCell align="left" sx={{ color: "gray", fontWeight: "bold" }}>Price Month</TableCell>
 
-              <TableCell align="left">Action</TableCell>
+              <TableCell align="left" sx={{ color: "gray", fontWeight: "bold" }}>Action</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

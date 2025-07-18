@@ -8,14 +8,15 @@ import vnp from "../../../assets/vnp.png";
 import paypal from "../../../assets/paypal.png";
 import momo from "../../../assets/momo.png";
 import shopeepay from "../../../assets/shopeepay.png";
-import { getOjectById } from "../../../services/convertFunction";
 import { initialOptions } from "../../../utils/contants";
 import { PayPalButtons, PayPalScriptProvider } from "@paypal/react-paypal-js";
-import { addDocument } from "../../../services/firebaseResponse";
 import { ContextMovie } from "../../../context/MovieProvider";
 import { HiOutlineTicket } from "react-icons/hi2";
 import { IoIosArrowForward } from "react-icons/io";
-
+import { addDocument } from "../../../services/firebaseResponse";
+import { ContextAccount } from "../../../context/AccountProvider";
+import { useAuth } from "../../../context/AuthsProvider";
+import { useNotification } from "../../../context/NotificationProvider";
 function RentPayment() {
   const paymentMethods = [
     { name: "PayPal", image: paypal },
@@ -26,24 +27,45 @@ function RentPayment() {
     { name: "VNPAY", image: vnp },
   ];
 
-  const [selectedPlan, setSelectedPlan] = useState(0);
+  const [selectedPlan, setSelectedPlan] = useState(paymentMethods[0]?.name);
   const { id } = useParams();
-
+  const {isLogin} = useAuth()
   const movies = useContext(ContextMovie);
-
   const priceRef = useRef(0);
-
+  const showNotification = useNotification();
+  const paymentMethod = selectedPlan;
   useEffect(() => {
-    priceRef.current = total();
-  }, []);
+    setSelectedPlan(paymentMethods[0]);
+    const movie = movies.find((e) => e.id === id);
+    if (movie) {
+      priceRef.current = Number(movie.rent);
+    }
+  }, [id, movies]);
+  
 
+  
 
-  const total = () => {
-   
-  };
-  const createSubscription =  () => {
+  const createSubscription = async  (transactionId) => {
+  
+    const starDate = new Date();
+    const expiryDate = new Date();
+    expiryDate.setDate(starDate.getDate() + 2);
+    const dataRentMovie = {
+      idMovie: id,
+      idUser: isLogin.id,
+      paymentMethod: paymentMethod?.name,
+      price: priceRef.current,
+      transactionId: transactionId,
+      starDate: starDate,
+      expiryDate: expiryDate
+    }
+    await addDocument("RentMovies", dataRentMovie)
+    showNotification(`Bạn đã thuê phim thành công!`, "success");
 
   }
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
     <div className="min-h-screen bg-white p-6 flex flex-col items-center pt-[100px]">
@@ -73,28 +95,32 @@ function RentPayment() {
                       <div className="w-full space-y-5">
                         <div className="flex justify-between px-8">
                           <span>Tên tài khoản</span>
-                          <span>ABCD</span>
+                          <span >{isLogin ? isLogin.userName : "ABCD"}</span>
                         </div>
                         <div className="flex justify-between px-8">
                           <span>Phim</span>
                           <span>{e?.name} </span>
                         </div>
                         <div className="flex justify-between px-8">
-                          <span>Thoi han</span>
-                          <span>48 gio</span>
+                          <span>Độ phân giải</span>
+                          <span>HD </span>
                         </div>
                         <div className="flex justify-between px-8">
-                          <span>Don gia</span>
-                          <span>{e.rent} dong</span>
+                          <span>Thời hạn</span>
+                          <span>48 tiếng</span>
+                        </div>
+                        <div className="flex justify-between px-8">
+                          <span>Đơn giá</span>
+                            <span>{Number(e.rent).toLocaleString()}đ</span>
                         </div>
                         <div className="flex justify-between px-8">
                           <span>Khuyến mãi</span>
-                          <span>0đ</span>
+                          <span>0 đ</span>
                         </div>
                         <hr className="mx-8 text-gray-300" />
                         <div className="flex justify-between font-semibold text-blue-600 px-8">
                           <span>Tổng cộng</span>
-                          <span>{total()}đ</span>
+                          <span>{Number(e.rent).toLocaleString()}đ</span>
                         </div>
                       </div>
                     </>
@@ -111,7 +137,7 @@ function RentPayment() {
                 <HiOutlineTicket className="text-[40px]" />
                 Áp dụng ưu đãi
               </div>
-              <IoIosArrowForward className="text-2xl"/>
+                <IoIosArrowForward className="text-2xl"/>
             </div>
           </div>
         </div>
@@ -122,11 +148,10 @@ function RentPayment() {
             <div className="grid grid-cols-3 gap-2 mb-4 ">
               {paymentMethods.map((method, idx) => (
                 <button
-                  key={idx}
-                  onClick={() => setSelectedPlan(idx)}
+                  onClick={() => setSelectedPlan(method.name)}
                   className={`border px-4 py-2 rounded-lg flex flex-col items-center text-sm 
                   ${
-                    selectedPlan === idx
+                    selectedPlan === method.name
                       ? "border-4 border-blue-600 bg-white"
                       : "border border-black/5"
                   }`}
@@ -145,6 +170,7 @@ function RentPayment() {
           </div>
           <PayPalScriptProvider options={initialOptions}>
             <PayPalButtons
+            disabled={!priceRef.current}
               style={{ layout: "vertical" }}
               createOrder={(data, actions) => {
                 const total = (priceRef.current / 25000).toFixed(2);
